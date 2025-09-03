@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+bun.lockb
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+pm2-*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# PM2
+.pm2/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# SSL certificates (never commit these)
+*.pem
+*.key
+*.crt
+*.cer
+
+# Backup files
+*.bak
+*.backup

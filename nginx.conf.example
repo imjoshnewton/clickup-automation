@@ -1,0 +1,54 @@
+# Example Nginx configuration for proxying to your ClickUp automation server
+# Place this in /etc/nginx/sites-available/clickup-automation
+
+server {
+    listen 443 ssl http2;
+    server_name your-domain.com;
+
+    # SSL Configuration
+    ssl_certificate /path/to/your/certificate.crt;
+    ssl_certificate_key /path/to/your/private.key;
+    
+    # Strong SSL Security
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    
+    # Rate limiting for webhook endpoint
+    limit_req_zone $binary_remote_addr zone=webhook:10m rate=10r/s;
+    
+    location /webhook/clickup {
+        # Rate limiting
+        limit_req zone=webhook burst=20 nodelay;
+        
+        # Proxy to your Node.js server
+        proxy_pass http://localhost:3000/webhook/clickup;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        
+        # Forward real IP for IP whitelisting
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Security headers
+        add_header X-Content-Type-Options nosniff;
+        add_header X-Frame-Options DENY;
+        add_header X-XSS-Protection "1; mode=block";
+    }
+    
+    # Block everything else
+    location / {
+        return 404;
+    }
+}
+
+# Redirect HTTP to HTTPS
+server {
+    listen 80;
+    server_name your-domain.com;
+    return 301 https://$server_name$request_uri;
+}
