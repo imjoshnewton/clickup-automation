@@ -91,15 +91,30 @@ sudo systemctl reload nginx
 
 ### 4. Process Management
 
+#### Using systemd (Recommended)
+Systemd provides better integration with Claude Code SDK:
+
 ```bash
-# Using PM2 (recommended)
+# Copy service file to user systemd directory
+cp clickup-automation.service ~/.config/systemd/user/
+
+# Enable and start service
+systemctl --user daemon-reload
+systemctl --user enable clickup-automation
+systemctl --user start clickup-automation
+
+# Check status
+systemctl --user status clickup-automation
+```
+
+#### Alternative: Using PM2
+Note: PM2 has compatibility issues with Claude Code SDK. Use systemd instead.
+
+```bash
 npm install -g pm2
-pm2 start server.js --name clickup-automation
+pm2 start ecosystem.config.cjs
 pm2 save
 pm2 startup
-
-# Or using systemd
-# Create service file at /etc/systemd/system/clickup-automation.service
 ```
 
 ### 5. ClickUp Configuration
@@ -114,15 +129,30 @@ pm2 startup
 
 ## Testing
 
+### Test Mode
+Tasks with IDs containing "test" automatically run in test mode with simplified automation:
+- Creates test files instead of real implementation
+- Makes commits and PRs for testing the automation infrastructure
+- **Does NOT make ClickUp API calls** (safe for testing)
+- Automatically cleans up worktrees after completion
+
+### Manual Testing
 ```bash
-# Test webhook endpoint
-curl -X POST https://your-domain.com/webhook/clickup \
+# Test webhook endpoint with test task ID
+curl -X POST http://localhost:3000/webhook/clickup \
   -H "Content-Type: application/json" \
   -H "X-Signature: your-webhook-secret" \
-  -d '{"task_id": "test123", "event": "statusUpdated"}'
+  -d '{"task_id": "test999", "event": "taskUpdated", "history_items": [{"field": "status", "after": {"status": "In Progress"}}]}'
+
+# Test with production task ID (will make real ClickUp API calls)
+curl -X POST http://localhost:3000/webhook/clickup \
+  -H "Content-Type: application/json" \
+  -H "X-Signature: your-webhook-secret" \
+  -d '{"task_id": "abc123", "event": "taskUpdated", "history_items": [{"field": "status", "after": {"status": "In Progress"}}]}'
 
 # Check logs
-pm2 logs clickup-automation
+systemctl --user status clickup-automation  # For systemd
+journalctl --user -u clickup-automation -f  # Follow systemd logs
 # or
 tail -f logs/automation_*.log
 ```

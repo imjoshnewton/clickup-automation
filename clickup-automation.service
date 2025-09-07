@@ -1,0 +1,30 @@
+[Unit]
+Description=ClickUp Automation Server with Claude Code SDK
+After=network.target
+
+[Service]
+Type=simple
+User=joshnewton
+Group=joshnewton
+WorkingDirectory=/home/joshnewton/Development/clickup-automation
+ExecStart=/home/linuxbrew/.linuxbrew/bin/bun server.ts
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables
+Environment=NODE_ENV=production
+Environment=PATH=/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:/usr/bin:/bin:/home/joshnewton/.local/bin
+Environment=HOME=/home/joshnewton
+Environment=USER=joshnewton
+Environment=SHELL=/bin/bash
+
+# Load environment from file
+EnvironmentFile=/home/joshnewton/Development/clickup-automation/.env
+
+# Resource limits
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
