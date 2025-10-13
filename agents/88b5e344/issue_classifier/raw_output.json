@@ -1,0 +1,177 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/home/joshnewton/Development/clickup-automation",
+    "session_id": "9d78aaf3-8381-4a25-bba3-4e08ae854f26",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "ExitPlanMode",
+      "Read",
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoWrite",
+      "WebSearch",
+      "BashOutput",
+      "KillShell",
+      "SlashCommand",
+      "mcp__clickup__get_workspaces",
+      "mcp__clickup__get_spaces",
+      "mcp__clickup__create_space",
+      "mcp__clickup__get_folders",
+      "mcp__clickup__create_folder",
+      "mcp__clickup__update_folder",
+      "mcp__clickup__delete_folder",
+      "mcp__clickup__organize_lists",
+      "mcp__clickup__get_space_hierarchy",
+      "mcp__clickup__navigate_workspace",
+      "mcp__clickup__get_lists",
+      "mcp__clickup__create_list",
+      "mcp__clickup__get_tasks",
+      "mcp__clickup__get_tasks_by_status",
+      "mcp__clickup__get_list_statuses",
+      "mcp__clickup__get_tasks_grouped_by_status",
+      "mcp__clickup__create_task",
+      "mcp__clickup__get_task",
+      "mcp__clickup__update_task",
+      "mcp__clickup__update_task_status",
+      "mcp__clickup__assign_task",
+      "mcp__clickup__get_task_subtasks",
+      "mcp__clickup__delete_task",
+      "mcp__clickup__move_task",
+      "mcp__clickup__duplicate_task",
+      "mcp__clickup__create_subtask",
+      "mcp__clickup__add_comment",
+      "mcp__clickup__get_comments",
+      "mcp__clickup__add_attachment",
+      "mcp__clickup__bulk_update_tasks",
+      "mcp__clickup__bulk_delete_tasks",
+      "mcp__clickup__create_checklist",
+      "mcp__clickup__get_checklists",
+      "mcp__clickup__update_checklist",
+      "mcp__clickup__delete_checklist",
+      "mcp__clickup__create_checklist_item",
+      "mcp__clickup__update_checklist_item",
+      "mcp__clickup__delete_checklist_item",
+      "mcp__clickup__get_custom_fields",
+      "mcp__clickup__set_custom_field_value",
+      "mcp__clickup__set_custom_field_value_by_name",
+      "mcp__clickup__remove_custom_field_value"
+    ],
+    "mcp_servers": [
+      {
+        "name": "clickup",
+        "status": "connected"
+      }
+    ],
+    "model": "claude-sonnet-4-5-20250929",
+    "permissionMode": "bypassPermissions",
+    "slash_commands": [
+      "feature",
+      "prime",
+      "classify_issue",
+      "generate_branch_name",
+      "start",
+      "install",
+      "implement",
+      "pull_request",
+      "find_plan_file",
+      "chore",
+      "commit",
+      "tools",
+      "bug",
+      "compact",
+      "context",
+      "cost",
+      "init",
+      "output-style:new",
+      "pr-comments",
+      "release-notes",
+      "todos",
+      "review",
+      "security-review"
+    ],
+    "apiKeySource": "ANTHROPIC_API_KEY",
+    "output_style": "default",
+    "agents": [
+      "general-purpose",
+      "statusline-setup",
+      "output-style-setup"
+    ],
+    "uuid": "52b3aa33-3a2f-4773-89d8-68752b412861"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-4-5-20250929",
+      "id": "msg_0157r8aGFHxDaXFwMDmYM7Rg",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "/feature"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 23401,
+        "cache_read_input_tokens": 5432,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 23401,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 5,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "9d78aaf3-8381-4a25-bba3-4e08ae854f26",
+    "uuid": "c27b3ff7-00ad-420d-8185-1b190fa76e80"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 3561,
+    "duration_api_ms": 3469,
+    "num_turns": 2,
+    "result": "/feature",
+    "session_id": "9d78aaf3-8381-4a25-bba3-4e08ae854f26",
+    "total_cost_usd": 0.08947035,
+    "usage": {
+      "input_tokens": 4,
+      "cache_creation_input_tokens": 23401,
+      "cache_read_input_tokens": 5432,
+      "output_tokens": 5,
+      "server_tool_use": {
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 23401
+      }
+    },
+    "modelUsage": {
+      "claude-sonnet-4-5-20250929": {
+        "inputTokens": 4,
+        "outputTokens": 5,
+        "cacheReadInputTokens": 5432,
+        "cacheCreationInputTokens": 23401,
+        "webSearchRequests": 0,
+        "costUSD": 0.08947035,
+        "contextWindow": 200000
+      }
+    },
+    "permission_denials": [],
+    "uuid": "05fb563b-26a9-4b20-b01d-540a2cbee372"
+  }
+]

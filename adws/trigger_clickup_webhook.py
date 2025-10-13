@@ -63,14 +63,19 @@ def verify_clickup_signature(signature: str) -> bool:
     return signature == CLICKUP_WEBHOOK_SECRET
 
 
-async def clickup_webhook(request: Request):
+async def clickup_webhook(request: Request, webhook_id: str = None):
     """Handle ClickUp webhook events.
 
     The webhook path is configurable via CLICKUP_WEBHOOK_PATH environment variable.
     Default: /webhook/clickup (for backward compatibility with server.ts)
+
+    Args:
+        webhook_id: Optional webhook ID from path (e.g., /webhook/clickup/86dxfm5bz/)
     """
     try:
         print("🚀 ClickUp webhook endpoint hit!")
+        if webhook_id:
+            print(f"📍 Webhook ID from path: {webhook_id}")
 
         # Get signature from header
         signature = request.headers.get("x-signature") or request.headers.get(
@@ -115,6 +120,15 @@ async def clickup_webhook(request: Request):
             if history and len(history) > 0:
                 task_id = history[0].get("task_id")
 
+        # ClickUp automation webhooks nest task info in payload.payload
+        if not task_id and "payload" in payload and isinstance(payload["payload"], dict):
+            task_id = payload["payload"].get("id")
+
+        # Also try using webhook_id from URL path as fallback
+        if not task_id and webhook_id:
+            task_id = webhook_id
+            print(f"📍 Using webhook_id from URL path as task_id: {task_id}")
+
         print("🔍 Extracted task_id:", task_id)
         print("🔍 Extracted event:", event)
 
@@ -126,8 +140,14 @@ async def clickup_webhook(request: Request):
         should_trigger = False
         trigger_reason = ""
 
+        # ClickUp Automation webhook (has auto_id field)
+        if "auto_id" in payload:
+            should_trigger = True
+            trigger_reason = f"ClickUp Automation triggered (auto_id: {payload.get('auto_id')})"
+            print(f"✅ Automation webhook detected: {payload.get('auto_id')}")
+
         # Task created event
-        if event == "taskCreated":
+        elif event == "taskCreated":
             should_trigger = True
             trigger_reason = "New task created"
 
@@ -282,7 +302,8 @@ async def health():
         }
 
 
-# Register the webhook route dynamically with the configured path
+# Register both webhook routes for backward compatibility (like server.ts)
+# 1. Base path: /webhook/clickup
 app.add_api_route(
     CLICKUP_WEBHOOK_PATH,
     clickup_webhook,
@@ -290,10 +311,20 @@ app.add_api_route(
     name="clickup_webhook"
 )
 
+# 2. Path with webhook ID: /webhook/clickup/{webhook_id}
+app.add_api_route(
+    f"{CLICKUP_WEBHOOK_PATH}/{{webhook_id}}",
+    clickup_webhook,
+    methods=["POST"],
+    name="clickup_webhook_with_id"
+)
+
 if __name__ == "__main__":
     print(f"Starting server on http://0.0.0.0:{PORT}")
-    print(f"Webhook endpoint: POST {CLICKUP_WEBHOOK_PATH}")
+    print(f"Webhook endpoints:")
+    print(f"  - POST {CLICKUP_WEBHOOK_PATH}")
+    print(f"  - POST {CLICKUP_WEBHOOK_PATH}/{{webhook_id}}")
     print(f"Health check: GET /health")
-    print(f"Backward compatible with server.ts webhook path")
+    print(f"Backward compatible with server.ts webhook paths")
 
     uvicorn.run(app, host="0.0.0.0", port=PORT)

@@ -1,0 +1,376 @@
+[
+  {
+    "type": "system",
+    "subtype": "init",
+    "cwd": "/home/joshnewton/Development/clickup-automation",
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "tools": [
+      "Task",
+      "Bash",
+      "Glob",
+      "Grep",
+      "ExitPlanMode",
+      "Read",
+      "Edit",
+      "Write",
+      "NotebookEdit",
+      "WebFetch",
+      "TodoWrite",
+      "WebSearch",
+      "BashOutput",
+      "KillShell",
+      "SlashCommand",
+      "mcp__clickup__get_workspaces",
+      "mcp__clickup__get_spaces",
+      "mcp__clickup__create_space",
+      "mcp__clickup__get_folders",
+      "mcp__clickup__create_folder",
+      "mcp__clickup__update_folder",
+      "mcp__clickup__delete_folder",
+      "mcp__clickup__organize_lists",
+      "mcp__clickup__get_space_hierarchy",
+      "mcp__clickup__navigate_workspace",
+      "mcp__clickup__get_lists",
+      "mcp__clickup__create_list",
+      "mcp__clickup__get_tasks",
+      "mcp__clickup__get_tasks_by_status",
+      "mcp__clickup__get_list_statuses",
+      "mcp__clickup__get_tasks_grouped_by_status",
+      "mcp__clickup__create_task",
+      "mcp__clickup__get_task",
+      "mcp__clickup__update_task",
+      "mcp__clickup__update_task_status",
+      "mcp__clickup__assign_task",
+      "mcp__clickup__get_task_subtasks",
+      "mcp__clickup__delete_task",
+      "mcp__clickup__move_task",
+      "mcp__clickup__duplicate_task",
+      "mcp__clickup__create_subtask",
+      "mcp__clickup__add_comment",
+      "mcp__clickup__get_comments",
+      "mcp__clickup__add_attachment",
+      "mcp__clickup__bulk_update_tasks",
+      "mcp__clickup__bulk_delete_tasks",
+      "mcp__clickup__create_checklist",
+      "mcp__clickup__get_checklists",
+      "mcp__clickup__update_checklist",
+      "mcp__clickup__delete_checklist",
+      "mcp__clickup__create_checklist_item",
+      "mcp__clickup__update_checklist_item",
+      "mcp__clickup__delete_checklist_item",
+      "mcp__clickup__get_custom_fields",
+      "mcp__clickup__set_custom_field_value",
+      "mcp__clickup__set_custom_field_value_by_name",
+      "mcp__clickup__remove_custom_field_value"
+    ],
+    "mcp_servers": [
+      {
+        "name": "clickup",
+        "status": "connected"
+      }
+    ],
+    "model": "claude-sonnet-4-5-20250929",
+    "permissionMode": "bypassPermissions",
+    "slash_commands": [
+      "feature",
+      "tools",
+      "prime",
+      "bug",
+      "classify_issue",
+      "generate_branch_name",
+      "start",
+      "find_plan_file",
+      "chore",
+      "commit",
+      "pull_request",
+      "implement",
+      "install",
+      "compact",
+      "context",
+      "cost",
+      "init",
+      "output-style:new",
+      "pr-comments",
+      "release-notes",
+      "todos",
+      "review",
+      "security-review"
+    ],
+    "apiKeySource": "ANTHROPIC_API_KEY",
+    "output_style": "default",
+    "agents": [
+      "general-purpose",
+      "statusline-setup",
+      "output-style-setup"
+    ],
+    "uuid": "0d3a40bd-5b75-496c-920f-db6876a2b83b"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-4-5-20250929",
+      "id": "msg_01AESYqRyXa9WgAj2YcWkVFj",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "I'll generate a git branch name and create the branch following the specified format."
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 6888,
+        "cache_read_input_tokens": 20578,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 6888,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "62140d6d-7147-4d62-a0f2-0e827a9dc885"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-4-5-20250929",
+      "id": "msg_01AESYqRyXa9WgAj2YcWkVFj",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_01EoGhQBAVfjcDizL4i7PmEi",
+          "name": "Bash",
+          "input": {
+            "command": "git checkout main",
+            "description": "Switch to main branch"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 6888,
+        "cache_read_input_tokens": 20578,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 6888,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "f64f01ac-b80b-48d5-aba5-5d8e1eac57eb"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-4-5-20250929",
+      "id": "msg_01AESYqRyXa9WgAj2YcWkVFj",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_014VPjkQkbdoFek7awmUTtQP",
+          "name": "Bash",
+          "input": {
+            "command": "git pull",
+            "description": "Pull latest changes from main"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 4,
+        "cache_creation_input_tokens": 6888,
+        "cache_read_input_tokens": 20578,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 6888,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "62f942d4-0798-4083-a797-382d2e08da1b"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_01EoGhQBAVfjcDizL4i7PmEi",
+          "type": "tool_result",
+          "content": "M\tadws/trigger_clickup_webhook.py\nM\tserver.ts\nYour branch is ahead of 'origin/main' by 1 commit.\n  (use \"git push\" to publish your local commits)\nAlready on 'main'",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "b0a5e1be-ca51-406c-9ca2-f17999cc0869"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_014VPjkQkbdoFek7awmUTtQP",
+          "type": "tool_result",
+          "content": "Already up to date.",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "ea2fe547-6149-4fb5-af07-e8e0b424eaa9"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-4-5-20250929",
+      "id": "msg_01B8CdccnD4sUE1JgDrqAH1F",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "tool_use",
+          "id": "toolu_013sgXPmBhth3pHQZTGGw9Sz",
+          "name": "Bash",
+          "input": {
+            "command": "git checkout -b feat-86dxfm5bz-create-form-content-type",
+            "description": "Create and switch to new feature branch"
+          }
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 8,
+        "cache_creation_input_tokens": 267,
+        "cache_read_input_tokens": 27466,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 267,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 32,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "d0430f1a-714a-43f9-90c8-1fe829392e36"
+  },
+  {
+    "type": "user",
+    "message": {
+      "role": "user",
+      "content": [
+        {
+          "tool_use_id": "toolu_013sgXPmBhth3pHQZTGGw9Sz",
+          "type": "tool_result",
+          "content": "Switched to a new branch 'feat-86dxfm5bz-create-form-content-type'",
+          "is_error": false
+        }
+      ]
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "ab2cbcb2-0426-4941-9323-898b56c16c51"
+  },
+  {
+    "type": "assistant",
+    "message": {
+      "model": "claude-sonnet-4-5-20250929",
+      "id": "msg_01SbjWm7CrSfCCUZtsgLLb9s",
+      "type": "message",
+      "role": "assistant",
+      "content": [
+        {
+          "type": "text",
+          "text": "feat-86dxfm5bz-create-form-content-type"
+        }
+      ],
+      "stop_reason": null,
+      "stop_sequence": null,
+      "usage": {
+        "input_tokens": 7,
+        "cache_creation_input_tokens": 136,
+        "cache_read_input_tokens": 27733,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 136,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 1,
+        "service_tier": "standard"
+      }
+    },
+    "parent_tool_use_id": null,
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "uuid": "3df52e4c-b584-4069-9c7e-78e860dcb310"
+  },
+  {
+    "type": "result",
+    "subtype": "success",
+    "is_error": false,
+    "duration_ms": 15878,
+    "duration_api_ms": 21304,
+    "num_turns": 9,
+    "result": "feat-86dxfm5bz-create-form-content-type",
+    "session_id": "7267d976-63da-4833-948b-dcce8c4b978c",
+    "total_cost_usd": 0.06373835000000001,
+    "usage": {
+      "input_tokens": 19,
+      "cache_creation_input_tokens": 7291,
+      "cache_read_input_tokens": 75777,
+      "output_tokens": 265,
+      "server_tool_use": {
+        "web_search_requests": 0
+      },
+      "service_tier": "standard",
+      "cache_creation": {
+        "ephemeral_1h_input_tokens": 0,
+        "ephemeral_5m_input_tokens": 7291
+      }
+    },
+    "modelUsage": {
+      "claude-3-5-haiku-20241022": {
+        "inputTokens": 11425,
+        "outputTokens": 123,
+        "cacheReadInputTokens": 0,
+        "cacheCreationInputTokens": 0,
+        "webSearchRequests": 0,
+        "costUSD": 0.009632000000000002,
+        "contextWindow": 200000
+      },
+      "claude-sonnet-4-5-20250929": {
+        "inputTokens": 19,
+        "outputTokens": 265,
+        "cacheReadInputTokens": 75777,
+        "cacheCreationInputTokens": 7291,
+        "webSearchRequests": 0,
+        "costUSD": 0.05410635,
+        "contextWindow": 200000
+      }
+    },
+    "permission_denials": [],
+    "uuid": "d79eea1e-7249-48bf-9dbb-e68c4d9b1852"
+  }
+]

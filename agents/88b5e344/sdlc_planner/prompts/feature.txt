@@ -1,0 +1,38 @@
+/feature Create "Form" Content / Lesson Type: Essentially this is a TypeForm replacement. Functionally, it's like a quiz ... but different.
+
+Probably call it a Form.
+Standard Features (Student)
+Question Types:
+Text entry
+Multiple choice
+Multiple answer
+Horizontal scale (5-point Likert)
+Standard Features (Admin)
+Facilitator (or higher level admin) can see:
+Results page in platform with:
+a summary of results (per cohort)
+AI insights of results
+ability to see the individual form submissions.
+Who has completed it and who has not
+Unique Features (compared to a Quiz)
+No points associated with questions
+Ability to make submission anonymous (IMHO this should be a default & unchangeable setting)
+Individual questions marked as required or optional
+Display / Navigation
+Show 1 question per a page
+Progress bar (when skip logic not in use - see below)
+Unique Advanced Features (for First Version)
+Ability to trigger in-platform notifications
+presumably to course facilitator about student completion
+Future Feature Ideas 
+Ability for facilitator to bulk email (from within platform) people who have / haven't completed
+Ability to use Form at a higher than course level. AKA as a webpage without authentication that could be accessed directly from URL.
+Skip logic (custom pathing / branching)
+Ability to serve users a unique questions (or skip questions), based on how they answer specific questions).
+Word count minimum requirement for text entry questions
+
+Files
+
+components/ViewCourse.tsx
+components/EditCourse.tsx
+components/courses/ContentRenderer.tsx

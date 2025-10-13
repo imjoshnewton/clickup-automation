@@ -562,18 +562,39 @@ async function processTaskWithSDK(
     const logPath = path.join(process.env.LOG_DIR || "./logs", logFile);
 
     await fs.mkdir(path.dirname(logPath), { recursive: true });
-    const logStream = await fs.open(logPath, "w");
+    let logStream: any = null;
+    
+    // Initialize log stream with error handling
+    try {
+      logStream = await fs.open(logPath, "w");
+    } catch (logOpenError: any) {
+      console.log(`Failed to open log file: ${logOpenError.message}`);
+    }
 
     const logProgress = async (message: string, isError = false) => {
       const timestamp = new Date().toISOString();
       const logEntry = `[${timestamp}] ${isError ? "ERROR" : "INFO"}: ${message}\n`;
       console.log(isError ? `ERROR: ${message}` : message);
-      try {
-        if (logStream) {
+      
+      // Try to write to log file, but don't fail if it doesn't work
+      if (logStream) {
+        try {
           await logStream.write(logEntry);
+          // Force flush to disk
+          await logStream.sync();
+        } catch (writeError: any) {
+          console.log(`Log write failed: ${writeError.message}`);
+          // Try to reopen the log stream
+          try {
+            if (logStream) {
+              await logStream.close();
+            }
+            logStream = await fs.open(logPath, "a"); // Append mode
+          } catch (reopenError: any) {
+            console.log(`Log reopen failed: ${reopenError.message}`);
+            logStream = null; // Give up on file logging
+          }
         }
-      } catch (writeError: any) {
-        console.log(`Log write failed: ${writeError.message}`);
       }
     };
 
@@ -589,9 +610,9 @@ async function processTaskWithSDK(
       // Change to the worktree directory before running Claude Code
       process.chdir(worktreePath);
 
-      // Set up timeout for Claude Code SDK query
+      // Set up timeout for Claude Code SDK query - increased to 15 minutes for complex tasks
       const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error("Claude Code SDK query timeout after 5 minutes")), 5 * 60 * 1000);
+        setTimeout(() => reject(new Error("Claude Code SDK query timeout after 15 minutes")), 15 * 60 * 1000);
       });
 
       const queryPromise = (async () => {
@@ -616,34 +637,60 @@ async function processTaskWithSDK(
       })();
 
       // Race between the query and timeout
-      await Promise.race([queryPromise, timeoutPromise]);
-
-      const result = messages.find((m) => m.type === "result");
-      if (result) {
-        if (result.subtype === "success") {
-          await logProgress(`✅ SDK conversation completed successfully`);
-          await logProgress(
-            `Response: ${(result as any).result?.substring(0, 100)}...`,
-          );
-          await logProgress("🎉 Task automation completed via Claude Code SDK!");
-          
-          // Clean up the worktree after successful completion
-          await cleanupWorktree(worktreePath);
+      try {
+        await Promise.race([queryPromise, timeoutPromise]);
+        
+        const result = messages.find((m) => m.type === "result");
+        if (result) {
+          if (result.subtype === "success") {
+            await logProgress(`✅ SDK conversation completed successfully`);
+            await logProgress(
+              `Response: ${(result as any).result?.substring(0, 100)}...`,
+            );
+            await logProgress("🎉 Task automation completed via Claude Code SDK!");
+            
+            // Clean up the worktree after successful completion
+            await cleanupWorktree(worktreePath);
+          } else {
+            await logProgress(
+              `⚠️ SDK conversation failed: ${result.subtype}`,
+              true,
+            );
+          }
         } else {
-          await logProgress(
-            `⚠️ SDK conversation failed: ${result.subtype}`,
-            true,
-          );
+          await logProgress("⚠️ No result message received from SDK", true);
         }
-      } else {
-        await logProgress("⚠️ No result message received from SDK", true);
+      } catch (timeoutError: any) {
+        if (timeoutError.message.includes("timeout")) {
+          await logProgress(`⏰ Claude Code SDK timed out after 15 minutes`, true);
+          await logProgress(`📊 Messages processed: ${messages.length}`, false);
+          
+          // Log the last few messages to understand where it got stuck
+          const lastMessages = messages.slice(-5);
+          await logProgress(`🔍 Last ${lastMessages.length} messages:`, false);
+          for (const msg of lastMessages) {
+            await logProgress(`  - ${msg.type}: ${msg.subtype || 'no subtype'}`, false);
+          }
+          
+          await logProgress(`⚠️ Task may have been partially completed - check git status`, false);
+        } else {
+          // Re-throw non-timeout errors
+          throw timeoutError;
+        }
       }
     } catch (error: any) {
       await logProgress(`❌ SDK automation failed: ${error.message}`, true);
       await logProgress(`❌ Stack trace: ${error.stack}`, true);
     } finally {
+      // Ensure log stream is properly closed
       if (logStream) {
-        await logStream.close();
+        try {
+          await logProgress("🏁 Closing automation log file...");
+          await logStream.sync(); // Flush any remaining data
+          await logStream.close();
+        } catch (closeError: any) {
+          console.log(`Log close failed: ${closeError.message}`);
+        }
       }
     }
   } catch (error) {
@@ -924,6 +971,20 @@ console.log("🔑 API Keys loaded:", {
   clickup: CLICKUP_API_KEY ? "YES" : "NO",
   anthropic: ANTHROPIC_API_KEY ? "YES" : "NO",
 });
+
+console.log("🤖 Claude Code SDK Environment:", {
+  entrypoint: process.env.CLAUDE_CODE_ENTRYPOINT ? "YES" : "NO",
+  claudecode: process.env.CLAUDECODE ? "YES" : "NO",
+  tty_stdin: process.stdin.isTTY ? "YES" : "NO",
+  tty_stdout: process.stdout.isTTY ? "YES" : "NO",
+});
+
+// Warn about missing Claude Code SDK environment variables
+if (!process.env.CLAUDE_CODE_ENTRYPOINT || !process.env.CLAUDECODE) {
+  console.warn("⚠️ WARNING: Missing Claude Code SDK environment variables!");
+  console.warn("   This may cause the SDK to hang in containerized environments.");
+  console.warn("   Required: CLAUDE_CODE_ENTRYPOINT=cli and CLAUDECODE=1");
+}
 
 app.listen(PORT, () => {
   console.log(`🚀 ClickUp automation server running on port ${PORT}`);
