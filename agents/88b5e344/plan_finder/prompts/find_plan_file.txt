@@ -1,0 +1,16 @@
+/find_plan_file I can see this project is focused on automation workflows for ClickUp/GitHub, not a course management platform. The feature request appears to be for a different project (one with course management functionality). However, I need to clarify with you:
+
+**This repository (`clickup-automation`) is an automation workflow system for triggering AI development workflows via GitHub Issues or ClickUp Tasks.** It doesn't contain:
+- Course management functionality
+- Student/facilitator roles
+- Content types like quizzes or forms
+- The files mentioned (ViewCourse.tsx, EditCourse.tsx, ContentRenderer.tsx)
+
+The feature request describes building a "Form" content type for what appears to be a **learning management system (LMS)** or **course platform**, but this is a **webhook automation repository**.
+
+**Questions:**
+1. Is this feature request intended for a different repository/project?
+2. Should I create a plan for implementing this feature in a hypothetical course platform based on the patterns I can infer?
+3. Or would you like me to explain the mismatch between the feature request and this codebase?
+
+Could you clarify which repository this feature should be implemented in? If you'd like me to proceed with creating a plan anyway (perhaps as a template for use elsewhere), I can do that, but it won't be specific to this codebase since the necessary infrastructure doesn't exist here.

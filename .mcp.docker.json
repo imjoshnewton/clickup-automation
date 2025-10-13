@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "clickup": {
+      "type": "stdio",
+      "command": "python",
+      "args": [
+        "-m", 
+        "clickup_mcp_server"
+      ],
+      "cwd": "/home/joshnewton/Development/mcp-servers/clickup-mcp-server",
+      "env": {
+        "CLICKUP_API_KEY": "pk_10205919_K07M4ASAIQORZNQOPXIDF2B7YRMORTV6"
+      }
+    }
+  }
+}

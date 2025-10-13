@@ -1,0 +1,250 @@
+/classify_issue {
+  "id": "86dxfm5bz",
+  "title": "Create \"Form\" Content / Lesson Type",
+  "description": "Essentially this is a TypeForm replacement. Functionally, it's like a quiz ... but different.\n\nProbably call it a Form.\nStandard Features (Student)\nQuestion Types:\nText entry\nMultiple choice\nMultiple answer\nHorizontal scale (5-point Likert)\nStandard Features (Admin)\nFacilitator (or higher level admin) can see:\nResults page in platform with:\na summary of results (per cohort)\nAI insights of results\nability to see the individual form submissions.\nWho has completed it and who has not\nUnique Features (compared to a Quiz)\nNo points associated with questions\nAbility to make submission anonymous (IMHO this should be a default & unchangeable setting)\nIndividual questions marked as required or optional\nDisplay / Navigation\nShow 1 question per a page\nProgress bar (when skip logic not in use - see below)\nUnique Advanced Features (for First Version)\nAbility to trigger in-platform notifications\npresumably to course facilitator about student completion\nFuture Feature Ideas \nAbility for facilitator to bulk email (from within platform) people who have / haven't completed\nAbility to use Form at a higher than course level. AKA as a webpage without authentication that could be accessed directly from URL.\nSkip logic (custom pathing / branching)\nAbility to serve users a unique questions (or skip questions), based on how they answer specific questions).\nWord count minimum requirement for text entry questions\n\nFiles\n\ncomponents/ViewCourse.tsx\ncomponents/EditCourse.tsx\ncomponents/courses/ContentRenderer.tsx",
+  "status": "ai do",
+  "platform": "clickup",
+  "raw_data": {
+    "id": "86dxfm5bz",
+    "name": "Create \"Form\" Content / Lesson Type",
+    "description": "Essentially this is a TypeForm replacement. Functionally, it's like a quiz ... but different.\n\nProbably call it a Form.\nStandard Features (Student)\nQuestion Types:\nText entry\nMultiple choice\nMultiple answer\nHorizontal scale (5-point Likert)\nStandard Features (Admin)\nFacilitator (or higher level admin) can see:\nResults page in platform with:\na summary of results (per cohort)\nAI insights of results\nability to see the individual form submissions.\nWho has completed it and who has not\nUnique Features (compared to a Quiz)\nNo points associated with questions\nAbility to make submission anonymous (IMHO this should be a default & unchangeable setting)\nIndividual questions marked as required or optional\nDisplay / Navigation\nShow 1 question per a page\nProgress bar (when skip logic not in use - see below)\nUnique Advanced Features (for First Version)\nAbility to trigger in-platform notifications\npresumably to course facilitator about student completion\nFuture Feature Ideas \nAbility for facilitator to bulk email (from within platform) people who have / haven't completed\nAbility to use Form at a higher than course level. AKA as a webpage without authentication that could be accessed directly from URL.\nSkip logic (custom pathing / branching)\nAbility to serve users a unique questions (or skip questions), based on how they answer specific questions).\nWord count minimum requirement for text entry questions\n\nFiles\n\ncomponents/ViewCourse.tsx\ncomponents/EditCourse.tsx\ncomponents/courses/ContentRenderer.tsx",
+    "text_content": "Essentially this is a TypeForm replacement. Functionally, it's like a quiz ... but different.\n\nProbably call it a Form.\nStandard Features (Student)\nQuestion Types:\nText entry\nMultiple choice\nMultiple answer\nHorizontal scale (5-point Likert)\nStandard Features (Admin)\nFacilitator (or higher level admin) can see:\nResults page in platform with:\na summary of results (per cohort)\nAI insights of results\nability to see the individual form submissions.\nWho has completed it and who has not\nUnique Features (compared to a Quiz)\nNo points associated with questions\nAbility to make submission anonymous (IMHO this should be a default & unchangeable setting)\nIndividual questions marked as required or optional\nDisplay / Navigation\nShow 1 question per a page\nProgress bar (when skip logic not in use - see below)\nUnique Advanced Features (for First Version)\nAbility to trigger in-platform notifications\npresumably to course facilitator about student completion\nFuture Feature Ideas \nAbility for facilitator to bulk email (from within platform) people who have / haven't completed\nAbility to use Form at a higher than course level. AKA as a webpage without authentication that could be accessed directly from URL.\nSkip logic (custom pathing / branching)\nAbility to serve users a unique questions (or skip questions), based on how they answer specific questions).\nWord count minimum requirement for text entry questions\n\nFiles\n\ncomponents/ViewCourse.tsx\ncomponents/EditCourse.tsx\ncomponents/courses/ContentRenderer.tsx",
+    "status": {
+      "status": "ai do",
+      "color": "#e16b16",
+      "orderindex": 6,
+      "type": "custom"
+    },
+    "orderindex": "120299030.00000000000000000000000000000000",
+    "date_created": "1754669746375",
+    "date_updated": "1760332789170",
+    "date_closed": null,
+    "creator": {
+      "id": 89314374,
+      "username": "Nathan Warner",
+      "email": "nathan.warner@newtoninstitute.com",
+      "color": null,
+      "profilePicture": "https://attachments.clickup.com/profilePictures/89314374_Ca9.jpg"
+    },
+    "assignees": [],
+    "tags": [],
+    "custom_fields": [
+      {
+        "id": "1e11bfb5-3eab-4ca2-b185-5dbe00d2312b",
+        "name": "Allocation",
+        "type": "drop_down",
+        "value": null,
+        "type_config": {
+          "sorting": "manual",
+          "options": [
+            {
+              "id": "aa198255-e01c-481f-b3c6-b379adf34075",
+              "name": "URGENT FIX",
+              "color": "#E65100",
+              "orderindex": 0
+            },
+            {
+              "id": "221deb3c-0527-4d25-8e99-86772925f9c3",
+              "name": "Sprint 1 (Jun 30 - Jul 11)",
+              "color": null,
+              "orderindex": 1
+            },
+            {
+              "id": "9aded781-d19d-44a4-b749-d3564054ecb6",
+              "name": "Sprint 2 (Jul 14 - Jul 25)",
+              "color": null,
+              "orderindex": 2
+            },
+            {
+              "id": "d06a6b8b-6a80-4be6-9486-6a0aa4e09588",
+              "name": "Sprint 3 (Jul 28 - Aug 8)",
+              "color": null,
+              "orderindex": 3
+            },
+            {
+              "id": "4cf65c46-30bb-4008-9aae-6617807f4fb4",
+              "name": "Sprint 4 (Aug 11 - Aug 22)",
+              "color": null,
+              "orderindex": 4
+            },
+            {
+              "id": "66a04d81-9481-4cf8-a691-1964cd7710dc",
+              "name": "Sprint 5 (Aug 25 - Sep 5)",
+              "color": null,
+              "orderindex": 5
+            },
+            {
+              "id": "ab603b42-cafe-462f-9a08-54de3187c95c",
+              "name": "Sprint 6 (Sep 8 - Sep 19)",
+              "color": null,
+              "orderindex": 6
+            },
+            {
+              "id": "e81a0587-0aa0-40b9-8a71-24bb365c41d9",
+              "name": "Sprint 7 (Sep 22 - Oct 3)",
+              "color": null,
+              "orderindex": 7
+            },
+            {
+              "id": "438bc802-3e01-4a2b-9ea5-0c93245bf03a",
+              "name": "Sprint 8 (Oct 6 - Oct 17)",
+              "color": null,
+              "orderindex": 8
+            },
+            {
+              "id": "e271f82f-63e0-4283-aec5-b9772800ad2a",
+              "name": "Sprint 9 (Oct 20 - Nov 14)",
+              "color": null,
+              "orderindex": 9
+            },
+            {
+              "id": "cf34f283-1500-4238-b300-e15df7114f55",
+              "name": "Spring 10 (Nov 17 - Dec 19)",
+              "color": null,
+              "orderindex": 10
+            }
+          ]
+        }
+      },
+      {
+        "id": "29c23ce5-6b90-4eeb-872c-cd4aa52d8bb9",
+        "name": "Area",
+        "type": "drop_down",
+        "value": 0,
+        "type_config": {
+          "sorting": "manual",
+          "options": [
+            {
+              "id": "208688a7-b3d9-4c7d-8578-74513ae2b0cf",
+              "name": "StartwithWho.ai",
+              "color": "#667684",
+              "orderindex": 0
+            },
+            {
+              "id": "e6b6f92f-145d-4aa8-8ced-56f7f0ef222c",
+              "name": "Architecture / Database",
+              "color": "#bf55ec",
+              "orderindex": 1
+            },
+            {
+              "id": "3b1f22da-3906-4da7-ad38-d92801649235",
+              "name": "MPACT",
+              "color": "#8b8f93",
+              "orderindex": 2
+            },
+            {
+              "id": "ef8e6ddd-7c9b-4eab-82e3-e08ba55f0b6d",
+              "name": "Flourishing Teams",
+              "color": "#acadaf",
+              "orderindex": 3
+            }
+          ]
+        }
+      },
+      {
+        "id": "1180fc2a-85c3-4530-8fa9-6c9c8c4e889d",
+        "name": "GitHub Branch",
+        "type": "short_text",
+        "value": null,
+        "type_config": {}
+      },
+      {
+        "id": "2c369e40-8125-42c2-a94d-9a9e5a286ab6",
+        "name": "GitHub Pull Request URL",
+        "type": "short_text",
+        "value": null,
+        "type_config": {}
+      },
+      {
+        "id": "a3840766-d391-436e-a1ca-d860013b8176",
+        "name": "Test URL",
+        "type": "short_text",
+        "value": null,
+        "type_config": {}
+      },
+      {
+        "id": "298bd972-b425-43e0-a174-0759ff105bcb",
+        "name": "Type",
+        "type": "drop_down",
+        "value": 2,
+        "type_config": {
+          "sorting": "manual",
+          "new_drop_down": true,
+          "options": [
+            {
+              "id": "59ffd144-9b44-4b5e-803f-b587aa5f4b33",
+              "name": "*User Issue*",
+              "color": "#AF7E2E",
+              "orderindex": 0
+            },
+            {
+              "id": "a440413b-7e56-4c51-8abb-35b3977e34a7",
+              "name": "Bug / Fix",
+              "color": "#ff7800",
+              "orderindex": 1
+            },
+            {
+              "id": "4bfa069f-f657-4431-a81b-6711f7c2ffbd",
+              "name": "New Feature ",
+              "color": "#02BCD4",
+              "orderindex": 2
+            },
+            {
+              "id": "028fe8ef-db93-455a-87d5-b10903af7688",
+              "name": "Update / Enhancement",
+              "color": "#8359D7",
+              "orderindex": 3
+            },
+            {
+              "id": "b7d080b4-4f35-45c6-8141-f7ac932f44ad",
+              "name": "Chore",
+              "color": null,
+              "orderindex": 4
+            }
+          ]
+        }
+      },
+      {
+        "id": "ce8a31d5-3da0-4432-a2c4-0083040b5744",
+        "name": "User Affected",
+        "type": "drop_down",
+        "value": 3,
+        "type_config": {
+          "sorting": "manual",
+          "options": [
+            {
+              "id": "191c6fe8-3cc4-461f-b201-04da0acb4dc7",
+              "name": "Dev Team",
+              "color": "#414141",
+              "orderindex": 0
+            },
+            {
+              "id": "62e23455-24b7-45f5-9189-0ecf89c87051",
+              "name": "Admin",
+              "color": "#939393",
+              "orderindex": 1
+            },
+            {
+              "id": "161f6286-ec37-4ae9-b9a0-aa1e9e38d013",
+              "name": "Student",
+              "color": "#cecece",
+              "orderindex": 2
+            },
+            {
+              "id": "230fdd80-5563-4dde-a126-90bd71ac9613",
+              "name": "Admin & Student",
+              "color": null,
+              "orderindex": 3
+            }
+          ]
+        }
+      }
+    ],
+    "list": {
+      "id": "901702638295",
+      "name": "Development Pipeline",
+      "access": true
+    },
+    "url": "https://app.clickup.com/t/86dxfm5bz"
+  }
+}

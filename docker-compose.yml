@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  # MCP ClickUp server
+  clickup-mcp-server:
+    image: python:3.11-slim
+    working_dir: /app
+    command: >
+      sh -c "
+        cd /home/joshnewton/Development/mcp-servers/clickup-mcp-server &&
+        pip install -e . &&
+        python -m clickup_mcp_server
+      "
+    volumes:
+      - /home/joshnewton/Development/mcp-servers/clickup-mcp-server:/home/joshnewton/Development/mcp-servers/clickup-mcp-server:ro
+    environment:
+      - CLICKUP_API_KEY=${CLICKUP_API_KEY}
+    networks:
+      - clickup-net
+    container_name: clickup-mcp-server
+
+  # Main automation server
+  clickup-automation:
+    build: .
+    depends_on:
+      - clickup-mcp-server
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - TERM=xterm-256color
+      - FORCE_COLOR=1
+      # Critical Claude Code SDK environment variables
+      - CLAUDE_CODE_ENTRYPOINT=cli
+      - CLAUDECODE=1
+    env_file:
+      - .env
+    volumes:
+      # Git credentials and config
+      - /home/joshnewton/.gitconfig:/home/joshnewton/.gitconfig:ro
+      - /home/joshnewton/.ssh:/home/joshnewton/.ssh:ro
+      - /home/joshnewton/.gh:/home/joshnewton/.gh:ro
+      
+      # Mount the git repository (with write access for worktrees)  
+      - /home/joshnewton/Development/clarify-your-compass:/home/joshnewton/Development/clarify-your-compass:rw
+      
+      # Mount logs directory for persistence
+      - ./logs:/app/logs:rw
+      
+      # Mount tmp directory for worktrees
+      - /tmp/claude-automation:/tmp/claude-automation:rw
+      
+      # Mount Claude configuration and MCP setup
+      - /home/joshnewton/.claude:/home/joshnewton/.claude:ro
+      - /home/joshnewton/.config/claude-code:/home/joshnewton/.config/claude-code:ro
+      
+      # Mount MCP server directory
+      - /home/joshnewton/Development/mcp-servers:/home/joshnewton/Development/mcp-servers:ro
+      
+      # Mount project .claude directory only (MCP config built into image)
+      - ./.claude:/app/.claude:ro
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    user: "1000:1000"
+    container_name: clickup-automation
+    networks:
+      - clickup-net
+
+networks:
+  clickup-net:
+    driver: bridge
