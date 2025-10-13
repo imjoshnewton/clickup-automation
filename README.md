@@ -1,18 +1,39 @@
-# ClickUp Task Automation with Claude Code
+# AI Developer Workflow (ADW) - Multi-Platform Automation
 
-Automated development workflow triggered by ClickUp task status changes.
+Automated development workflow with Claude Code for GitHub Issues and ClickUp Tasks.
+
+## Platform Support
+
+This system supports **two platforms** for triggering automated development workflows:
+
+- **GitHub Issues**: Trigger workflows when issues are labeled or commented on
+- **ClickUp Tasks**: Trigger workflows when tasks are created or commented on
+
+Both platforms use the same AI-powered workflow engine and can be run simultaneously on the same server.
 
 ## How It Works
 
-1. **ClickUp Webhook** → Task status change triggers webhook
+### Workflow Overview
+
+1. **Platform Webhook** → Issue/Task event triggers webhook
 2. **Secure Server** → Receives webhook via HTTPS with signature verification
 3. **Claude Code** → Automatically executes the development workflow:
-   - Gets task details from ClickUp
-   - Creates feature branch
+   - Gets work item details (issue or task)
+   - Creates feature branch in isolated git worktree
    - Consults AI models for implementation plan
    - Implements changes
    - Runs linting and builds
-   - Creates PR and updates ClickUp task
+   - Creates PR and updates work item
+
+### Platform-Specific Triggers
+
+**GitHub:**
+- Issue labeled with specific label (e.g., "adw")
+- Comment on issue with "adw" command
+
+**ClickUp:**
+- Task created in configured list
+- Comment on task with "adw" command
 
 ## Security Architecture
 
@@ -56,8 +77,8 @@ Automated development workflow triggered by ClickUp task status changes.
 git clone <this-repo>
 cd clickup-automation
 
-# Install dependencies
-bun install
+# Install uv (Python package manager used by ADW scripts)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Copy and configure environment
 cp .env.example .env
@@ -66,17 +87,40 @@ cp .env.example .env
 
 ### 2. Environment Configuration
 
-```bash
-# Required
-CLICKUP_WEBHOOK_SECRET=generate-a-strong-secret-here
-REPO_PATH=/path/to/your/development/repo
-ANTHROPIC_API_KEY=your-anthropic-api-key
+The `.env.example` file is organized into sections for shared configuration and platform-specific settings.
 
-# Optional Security
-# Note: ClickUp doesn't provide fixed webhook IPs
-# Add your own testing/development IPs if needed
-# ALLOWED_IPS=your.testing.ip.here
+#### Shared Configuration (Required)
+```bash
+# Core settings used by both platforms
+PORT=8001                                  # Webhook server port
+REPO_PATH=/path/to/your/repository         # Target git repository
+CLAUDE_CODE_PATH=claude                    # Path to claude binary
+ANTHROPIC_API_KEY=your-anthropic-api-key   # Claude Code SDK
+LOG_DIR=./logs
+WORKTREE_BASE_DIR=/tmp/claude-automation   # Git worktree isolation
 ```
+
+#### GitHub Configuration (Optional)
+Only needed if you want to use GitHub issues:
+
+```bash
+GITHUB_PAT=your-github-token               # Optional: for different GitHub account
+E2B_API_KEY=your-e2b-key                   # Optional: sandbox environments
+CLOUDFLARED_TUNNEL_TOKEN=your-token        # Optional: tunnel for webhook
+CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR=true
+```
+
+#### ClickUp Configuration (Optional)
+Only needed if you want to use ClickUp tasks:
+
+```bash
+CLICKUP_API_KEY=your-clickup-api-key
+CLICKUP_WEBHOOK_SECRET=your-webhook-secret
+CLICKUP_LIST_ID=                           # Optional: filter to specific list
+CLICKUP_TEST_TASK_ID=                      # Optional: for health checks
+```
+
+**Note:** You can configure both platforms or just one, depending on your needs.
 
 ### 3. Nginx Setup (Recommended)
 
@@ -117,51 +161,150 @@ pm2 save
 pm2 startup
 ```
 
-### 5. ClickUp Configuration
+### 5. Platform Configuration
 
-1. Go to your ClickUp Space/List settings
-2. Navigate to Automations
-3. Create new automation:
-   - **Trigger**: "Status changes to" → Select your trigger status
-   - **Action**: "Send webhook"
-   - **URL**: `https://your-domain.com/webhook/clickup`
-   - **Headers**: Add `X-Signature: YOUR_WEBHOOK_SECRET`
+#### GitHub Setup
+
+The GitHub webhook system uses the existing `trigger_webhook.py` server:
+
+1. **Install GitHub CLI and authenticate:**
+   ```bash
+   brew install gh  # or your package manager
+   gh auth login
+   ```
+
+2. **Start the GitHub webhook server:**
+   ```bash
+   # Using the Python script directly
+   uv run adws/trigger_webhook.py
+   ```
+
+3. **Configure GitHub webhook** (if using remote webhooks):
+   - Go to repository settings → Webhooks
+   - Add webhook URL: `https://your-domain.com/gh-webhook`
+   - Set content type: `application/json`
+   - Configure events: Issues, Issue comments
+
+4. **Or use it manually** with issue numbers:
+   ```bash
+   uv run adws/adw_plan_build.py --platform github --issue 123
+   ```
+
+#### ClickUp Setup
+
+The ClickUp webhook system uses the new `trigger_clickup_webhook.py` server:
+
+1. **Start the ClickUp webhook server:**
+   ```bash
+   # Using the Python script directly
+   uv run adws/trigger_clickup_webhook.py
+   ```
+
+2. **Configure ClickUp webhook:**
+   - Go to your ClickUp Space/List settings
+   - Navigate to Webhooks
+   - Create new webhook:
+     - **URL**: `https://your-domain.com/clickup-webhook`
+     - **Events**: Task Created, Task Comment Posted
+     - **Secret**: Your `CLICKUP_WEBHOOK_SECRET`
+
+3. **Or use it manually** with task IDs:
+   ```bash
+   uv run adws/adw_plan_build.py --platform clickup --task-id abc123
+   ```
+
+#### Running Both Platforms
+
+You can run both webhook servers simultaneously on different ports or use a reverse proxy (Nginx) to route to both:
+
+```bash
+# Terminal 1: GitHub webhooks
+PORT=8000 uv run adws/trigger_webhook.py
+
+# Terminal 2: ClickUp webhooks
+PORT=8001 uv run adws/trigger_clickup_webhook.py
+```
 
 ## Testing
 
-### Test Mode
-Tasks with IDs containing "test" automatically run in test mode with simplified automation:
-- Creates test files instead of real implementation
-- Makes commits and PRs for testing the automation infrastructure
-- **Does NOT make ClickUp API calls** (safe for testing)
-- Automatically cleans up worktrees after completion
+### Health Checks
+
+Run comprehensive health checks for platform validation:
+
+```bash
+# Check both platforms
+uv run adws/health_check.py --platform both
+
+# Check only GitHub
+uv run adws/health_check.py --platform github
+
+# Check only ClickUp
+uv run adws/health_check.py --platform clickup
+```
+
+The health check validates:
+- Environment variables (platform-specific)
+- API connectivity (GitHub CLI or ClickUp API)
+- Claude Code functionality
+- Git repository configuration
 
 ### Manual Testing
+
+#### GitHub
 ```bash
-# Test webhook endpoint with test task ID
-curl -X POST http://localhost:3000/webhook/clickup \
+# Test GitHub workflow directly
+uv run adws/adw_plan_build.py --platform github --issue 123 --adw-id test-run-001
+
+# Or use legacy positional arguments (defaults to GitHub)
+uv run adws/adw_plan_build.py 123 test-run-001
+```
+
+#### ClickUp
+```bash
+# Test ClickUp workflow directly
+uv run adws/adw_plan_build.py --platform clickup --task-id abc123 --adw-id test-run-001
+
+# Test webhook endpoint
+curl -X POST http://localhost:8001/clickup-webhook \
   -H "Content-Type: application/json" \
   -H "X-Signature: your-webhook-secret" \
-  -d '{"task_id": "test999", "event": "taskUpdated", "history_items": [{"field": "status", "after": {"status": "In Progress"}}]}'
+  -d '{"event": "taskCreated", "task_id": "abc123"}'
 
-# Test with production task ID (will make real ClickUp API calls)
-curl -X POST http://localhost:3000/webhook/clickup \
+# Test with comment trigger
+curl -X POST http://localhost:8001/clickup-webhook \
   -H "Content-Type: application/json" \
   -H "X-Signature: your-webhook-secret" \
-  -d '{"task_id": "abc123", "event": "taskUpdated", "history_items": [{"field": "status", "after": {"status": "In Progress"}}]}'
+  -d '{"event": "taskCommentPosted", "task_id": "abc123", "comment": {"comment_text": "adw"}}'
+```
 
-# Check logs
-systemctl --user status clickup-automation  # For systemd
-journalctl --user -u clickup-automation -f  # Follow systemd logs
-# or
-tail -f logs/automation_*.log
+### Logs
+
+Logs are organized by ADW ID:
+```bash
+# View logs for a specific workflow
+tail -f agents/<adw-id>/adw_plan_build/execution.log
+
+# Check webhook server logs
+journalctl --user -u clickup-automation -f  # For systemd
+tail -f logs/automation_*.log                # Legacy PM2 logs
 ```
 
 ## Monitoring
 
-- Logs stored in `./logs/automation_TASKID_TIMESTAMP.log`
-- Health check: `https://your-domain.com/health`
-- PM2 monitoring: `pm2 monit`
+### Health Checks
+Both webhook servers expose health check endpoints:
+- GitHub: `http://localhost:8000/health`
+- ClickUp: `http://localhost:8001/health`
+
+Or run comprehensive checks:
+```bash
+uv run adws/health_check.py --platform both
+```
+
+### Logs
+- Workflow logs: `agents/<adw-id>/adw_plan_build/execution.log`
+- Legacy logs: `./logs/automation_TASKID_TIMESTAMP.log`
+- Systemd logs: `journalctl --user -u clickup-automation -f`
 
 ## Security Best Practices
 
@@ -172,9 +315,54 @@ tail -f logs/automation_*.log
 5. **Keep Claude Code API key** secure
 6. **Use firewall rules** to restrict access
 
+## Architecture
+
+### Platform Adapter Pattern
+
+The system uses a **platform adapter pattern** to provide a unified interface for both GitHub and ClickUp:
+
+```
+adw_plan_build.py (Orchestrator)
+        ↓
+platform_adapter.py (Abstraction Layer)
+        ↓
+    /       \
+   /         \
+github.py  clickup.py (Platform-Specific)
+```
+
+Key components:
+- `adws/adw_plan_build.py` - Main workflow orchestrator
+- `adws/platform_adapter.py` - Unified interface for both platforms
+- `adws/github.py` - GitHub-specific operations (unchanged)
+- `adws/clickup.py` - ClickUp-specific operations (new)
+- `adws/data_types.py` - Shared data models (WorkItem abstraction)
+
+### Webhook Servers
+
+- `adws/trigger_webhook.py` - GitHub webhook server (unchanged)
+- `adws/trigger_clickup_webhook.py` - ClickUp webhook server (new)
+
+Both servers launch `adw_plan_build.py` as a background process with appropriate platform flags.
+
 ## Troubleshooting
 
-- **Webhook not received**: Check ClickUp automation and firewall rules
-- **Signature verification fails**: Ensure secrets match exactly
-- **Claude Code errors**: Check logs and API key permissions
+### General Issues
+- **Claude Code errors**: Check logs and verify `ANTHROPIC_API_KEY` is set correctly
 - **Git operations fail**: Verify SSH keys and repository access
+- **Worktree errors**: Ensure `WORKTREE_BASE_DIR` is writable and has space
+
+### GitHub-Specific
+- **Webhook not received**: Check GitHub webhook configuration and delivery logs
+- **Authentication fails**: Run `gh auth status` and re-authenticate if needed
+- **Issue operations fail**: Verify `gh` CLI has repository access
+
+### ClickUp-Specific
+- **Webhook not received**: Check ClickUp webhook configuration in Space settings
+- **Signature verification fails**: Ensure `CLICKUP_WEBHOOK_SECRET` matches webhook configuration exactly
+- **API errors**: Verify `CLICKUP_API_KEY` is valid and has proper permissions
+- **Task not found**: Check that ClickUp MCP tools are configured (see Claude Code MCP setup)
+
+### Platform Adapter Issues
+- **Import errors**: Ensure all Python dependencies are installed via `uv`
+- **Platform detection fails**: Use explicit `--platform` flag instead of relying on defaults
