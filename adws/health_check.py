@@ -4,6 +4,7 @@
 # dependencies = [
 #     "python-dotenv",
 #     "pydantic",
+#     "requests",
 # ]
 # ///
 
