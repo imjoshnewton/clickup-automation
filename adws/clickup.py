@@ -1,6 +1,6 @@
 #!/usr/bin/env -S uv run
 # /// script
-# dependencies = ["python-dotenv", "pydantic"]
+# dependencies = ["python-dotenv", "pydantic", "requests"]
 # ///
 
 """
@@ -19,6 +19,7 @@ import subprocess
 import sys
 import os
 import json
+import requests
 from typing import Dict, List, Optional, Any
 from data_types import ClickUpTask, ClickUpComment
 
@@ -85,15 +86,22 @@ def get_task(task_id: str) -> ClickUpTask:
             task_data = mcp_get_task(task_id)
             return ClickUpTask(**task_data)
         except ImportError:
-            # Fallback: Direct API call using https
-            import https
+            # Fallback: Direct API call using requests
             url = f"https://api.clickup.com/api/v2/task/{task_id}"
+            headers = {
+                "Authorization": api_key,
+                "Content-Type": "application/json"
+            }
 
-            # This is a placeholder - in practice, MCP tools will be used
-            raise ClickUpAPIError(
-                "MCP ClickUp tools not available. "
-                "This function should be called from Claude Code with MCP enabled."
-            )
+            response = requests.get(url, headers=headers)
+
+            if response.status_code == 404:
+                raise TaskNotFoundError(f"Task {task_id} not found")
+            elif response.status_code != 200:
+                raise ClickUpAPIError(f"ClickUp API error: {response.status_code} - {response.text}")
+
+            task_data = response.json()
+            return ClickUpTask(**task_data)
 
     except Exception as e:
         if "not found" in str(e).lower():
@@ -126,11 +134,22 @@ def add_task_comment(task_id: str, comment: str) -> None:
             mcp_add_comment(task_id, comment)
             print(f"Successfully posted comment to task #{task_id}")
         except ImportError:
-            # Fallback
-            raise ClickUpAPIError(
-                "MCP ClickUp tools not available. "
-                "This function should be called from Claude Code with MCP enabled."
-            )
+            # Fallback: Direct API call
+            url = f"https://api.clickup.com/api/v2/task/{task_id}/comment"
+            headers = {
+                "Authorization": api_key,
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "comment_text": comment
+            }
+
+            response = requests.post(url, headers=headers, json=payload)
+
+            if response.status_code not in [200, 201]:
+                raise ClickUpAPIError(f"ClickUp API error: {response.status_code} - {response.text}")
+
+            print(f"Successfully posted comment to task #{task_id}")
 
     except Exception as e:
         print(f"Error posting comment to task {task_id}: {e}", file=sys.stderr)
@@ -161,11 +180,22 @@ def update_task_status(task_id: str, status: str) -> None:
             mcp_update_status(task_id, status)
             print(f"Successfully updated task #{task_id} status to: {status}")
         except ImportError:
-            # Fallback
-            raise ClickUpAPIError(
-                "MCP ClickUp tools not available. "
-                "This function should be called from Claude Code with MCP enabled."
-            )
+            # Fallback: Direct API call
+            url = f"https://api.clickup.com/api/v2/task/{task_id}"
+            headers = {
+                "Authorization": api_key,
+                "Content-Type": "application/json"
+            }
+            payload = {
+                "status": status
+            }
+
+            response = requests.put(url, headers=headers, json=payload)
+
+            if response.status_code != 200:
+                raise ClickUpAPIError(f"ClickUp API error: {response.status_code} - {response.text}")
+
+            print(f"Successfully updated task #{task_id} status to: {status}")
 
     except Exception as e:
         print(f"Error updating task {task_id} status: {e}", file=sys.stderr)
@@ -199,11 +229,42 @@ def set_task_custom_field(task_id: str, list_id: str, field_name: str, value: An
             mcp_set_field(task_id, list_id, field_name, value)
             print(f"Successfully set custom field '{field_name}' on task #{task_id}")
         except ImportError:
-            # Fallback
-            raise ClickUpAPIError(
-                "MCP ClickUp tools not available. "
-                "This function should be called from Claude Code with MCP enabled."
-            )
+            # Fallback: Direct API call
+            # First, get the custom fields to find the field ID
+            fields_url = f"https://api.clickup.com/api/v2/list/{list_id}/field"
+            headers = {
+                "Authorization": api_key,
+                "Content-Type": "application/json"
+            }
+
+            fields_response = requests.get(fields_url, headers=headers)
+
+            if fields_response.status_code != 200:
+                raise ClickUpAPIError(f"Failed to fetch custom fields: {fields_response.status_code} - {fields_response.text}")
+
+            fields_data = fields_response.json()
+            field_id = None
+
+            for field in fields_data.get("fields", []):
+                if field.get("name") == field_name:
+                    field_id = field.get("id")
+                    break
+
+            if not field_id:
+                raise ClickUpAPIError(f"Custom field '{field_name}' not found in list {list_id}")
+
+            # Now set the custom field value
+            set_url = f"https://api.clickup.com/api/v2/task/{task_id}/field/{field_id}"
+            payload = {
+                "value": value
+            }
+
+            set_response = requests.post(set_url, headers=headers, json=payload)
+
+            if set_response.status_code != 200:
+                raise ClickUpAPIError(f"Failed to set custom field: {set_response.status_code} - {set_response.text}")
+
+            print(f"Successfully set custom field '{field_name}' on task #{task_id}")
 
     except Exception as e:
         print(f"Error setting custom field on task {task_id}: {e}", file=sys.stderr)
