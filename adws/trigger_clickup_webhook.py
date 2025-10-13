@@ -34,6 +34,7 @@ load_dotenv()
 PORT = int(os.getenv("PORT", "8001"))
 CLICKUP_WEBHOOK_SECRET = os.getenv("CLICKUP_WEBHOOK_SECRET")
 CLICKUP_LIST_ID = os.getenv("CLICKUP_LIST_ID")  # Optional: filter to specific list
+CLICKUP_WEBHOOK_PATH = os.getenv("CLICKUP_WEBHOOK_PATH", "/webhook/clickup")  # Configurable webhook path
 
 # Create FastAPI app
 app = FastAPI(
@@ -62,9 +63,12 @@ def verify_clickup_signature(signature: str) -> bool:
     return signature == CLICKUP_WEBHOOK_SECRET
 
 
-@app.post("/clickup-webhook")
 async def clickup_webhook(request: Request):
-    """Handle ClickUp webhook events."""
+    """Handle ClickUp webhook events.
+
+    The webhook path is configurable via CLICKUP_WEBHOOK_PATH environment variable.
+    Default: /webhook/clickup (for backward compatibility with server.ts)
+    """
     try:
         print("🚀 ClickUp webhook endpoint hit!")
 
@@ -278,9 +282,18 @@ async def health():
         }
 
 
+# Register the webhook route dynamically with the configured path
+app.add_api_route(
+    CLICKUP_WEBHOOK_PATH,
+    clickup_webhook,
+    methods=["POST"],
+    name="clickup_webhook"
+)
+
 if __name__ == "__main__":
     print(f"Starting server on http://0.0.0.0:{PORT}")
-    print(f"Webhook endpoint: POST /clickup-webhook")
+    print(f"Webhook endpoint: POST {CLICKUP_WEBHOOK_PATH}")
     print(f"Health check: GET /health")
+    print(f"Backward compatible with server.ts webhook path")
 
     uvicorn.run(app, host="0.0.0.0", port=PORT)

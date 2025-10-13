@@ -204,9 +204,12 @@ The ClickUp webhook system uses the new `trigger_clickup_webhook.py` server:
    - Go to your ClickUp Space/List settings
    - Navigate to Webhooks
    - Create new webhook:
-     - **URL**: `https://your-domain.com/clickup-webhook`
+     - **URL**: `https://your-domain.com/webhook/clickup` (default path, configurable)
      - **Events**: Task Created, Task Comment Posted
      - **Secret**: Your `CLICKUP_WEBHOOK_SECRET`
+
+   **Note:** The webhook path is configurable via `CLICKUP_WEBHOOK_PATH` in `.env`.
+   Default is `/webhook/clickup` for backward compatibility with `server.ts`.
 
 3. **Or use it manually** with task IDs:
    ```bash
@@ -264,17 +267,20 @@ uv run adws/adw_plan_build.py 123 test-run-001
 # Test ClickUp workflow directly
 uv run adws/adw_plan_build.py --platform clickup --task-id abc123 --adw-id test-run-001
 
-# Test webhook endpoint
-curl -X POST http://localhost:8001/clickup-webhook \
+# Test webhook endpoint (default path: /webhook/clickup)
+curl -X POST http://localhost:8001/webhook/clickup \
   -H "Content-Type: application/json" \
   -H "X-Signature: your-webhook-secret" \
   -d '{"event": "taskCreated", "task_id": "abc123"}'
 
 # Test with comment trigger
-curl -X POST http://localhost:8001/clickup-webhook \
+curl -X POST http://localhost:8001/webhook/clickup \
   -H "Content-Type: application/json" \
   -H "X-Signature: your-webhook-secret" \
   -d '{"event": "taskCommentPosted", "task_id": "abc123", "comment": {"comment_text": "adw"}}'
+
+# To use a custom path, set CLICKUP_WEBHOOK_PATH in .env
+# Example: CLICKUP_WEBHOOK_PATH=/my-custom-webhook
 ```
 
 ### Logs
