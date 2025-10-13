@@ -10,18 +10,21 @@ issue: $3
 
 ## Instructions
 
-- Generate a branch name in the format: `<issue_class>-<issue_number>-<adw_id>-<concise_name>`
-- The `<concise_name>` should be:
+- Generate a branch name in the format: `{task-id}/{issue_class}/{concise_name}`
+- The `{task-id}` is the ClickUp task ID (e.g., `86dxfm5bz`)
+- The `{issue_class}` should be the type: `feature`, `bug`, `chore`, or `update`
+- The `{concise_name}` should be:
   - 3-6 words maximum
   - All lowercase
   - Words separated by hyphens
   - Descriptive of the main task/feature
   - No special characters except hyphens
 - Examples:
-  - `feat-123-a1b2c3d4-add-user-auth`
-  - `bug-456-e5f6g7h8-fix-login-error`
-  - `chore-789-i9j0k1l2-update-dependencies`
-- Extract the issue number, title, and body from the issue JSON
+  - `86dxfm5bz/feature/add-user-authentication`
+  - `abc123xyz/bug/fix-login-error`
+  - `def456uvw/chore/update-dependencies`
+  - `ghi789rst/update/enhance-user-profile`
+- Extract the task ID, title, and description from the issue JSON
 
 ## Run
 
